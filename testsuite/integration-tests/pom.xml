@@ -213,6 +213,19 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>none</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
                     <!-- Disable the standard copy-based provisioning -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -220,6 +233,13 @@
                         <executions>
                             <execution>
                                 <id>initialize-basedirs</id>
+                                <phase>none</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>                            
+                            <execution>
+                                <id>unpack-resteasy</id>
                                 <phase>none</phase>
                                 <goals>
                                     <goal>run</goal>
@@ -279,10 +299,10 @@
                                 <ipv6>false</ipv6>
                                 <ipv6ArquillianSettings></ipv6ArquillianSettings>
                                 <node>127.0.0.1</node>
-                                <jboss.home>${jboss.home}</jboss.home>
+                                <!--<jboss.home>${jboss.home}</jboss.home>-->
                                 <project.version>${project.version}</project.version>
                                 <version.resteasy.testsuite>${version.resteasy.testsuite}</version.resteasy.testsuite>
-                                <jboss.server.config.file.name>${jboss.server.config.file.name}</jboss.server.config.file.name>
+                                <!--<jboss.server.config.file.name>${jboss.server.config.file.name}</jboss.server.config.file.name>-->
                                 <security.provider>${security.provider}</security.provider>
                                 <modular.jdk.args>${modular.jdk.args}</modular.jdk.args>
                                 <container.base.dir.managed>${container.base.dir.managed}</container.base.dir.managed>
