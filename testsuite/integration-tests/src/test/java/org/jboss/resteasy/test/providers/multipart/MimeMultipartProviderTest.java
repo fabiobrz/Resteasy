@@ -5,7 +5,6 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.category.ExpectedFailingWithStandaloneMicroprofileConfiguration;
-import org.jboss.resteasy.category.NotForBootableJar;
 import org.jboss.resteasy.client.jaxrs.ProxyBuilder;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
@@ -56,7 +55,6 @@ import java.util.Map;
 @RunAsClient
 @Category({
     ExpectedFailingWithStandaloneMicroprofileConfiguration.class,    //  MP is missing javax.mail
-    NotForBootableJar.class    //  no mail layer so far
 })
 public class MimeMultipartProviderTest {
 
