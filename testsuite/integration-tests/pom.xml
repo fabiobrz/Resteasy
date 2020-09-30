@@ -248,7 +248,7 @@
                                     </plugin-options>
                                     <feature-packs>
                                         <feature-pack>
-                                            <groupId>org.wildfly</groupId>
+                                            <groupId>${testsuite.wildfly.galleon.pack.group.id}</groupId>
                                             <artifactId>wildfly-galleon-pack</artifactId>
                                             <version>${server.version}</version>
                                             <!-- Required for rxjava -->

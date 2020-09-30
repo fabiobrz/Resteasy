@@ -84,6 +84,7 @@
             </activation>
             <properties>
                 <additional.surefire.excluded.groups>org.jboss.resteasy.category.NotForBootableJar</additional.surefire.excluded.groups>
+                <testsuite.wildfly.galleon.pack.group.id>org.wildfly</testsuite.wildfly.galleon.pack.group.id>
             </properties>
             <modules>
                 <module>arquillian-utils</module>
