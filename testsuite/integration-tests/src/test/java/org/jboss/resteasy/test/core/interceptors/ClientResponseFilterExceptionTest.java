@@ -11,7 +11,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.resteasy.category.NotForBootableJar;
 import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -29,7 +28,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import io.reactivex.Flowable;
@@ -44,7 +42,6 @@ import io.reactivex.Single;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@Category(NotForBootableJar.class) // no RX layer so far
 public class ClientResponseFilterExceptionTest {
 
    private static ResteasyClient client;

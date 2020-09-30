@@ -251,6 +251,7 @@
                                             <groupId>org.wildfly</groupId>
                                             <artifactId>wildfly-galleon-pack</artifactId>
                                             <version>${server.version}</version>
+                                            <!-- Required for rxjava -->
                                             <includedPackages>
                                                 <package>org.jboss.resteasy.resteasy-rxjava2</package>
                                             </includedPackages>
