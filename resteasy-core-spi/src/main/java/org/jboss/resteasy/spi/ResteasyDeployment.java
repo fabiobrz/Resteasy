@@ -147,6 +147,12 @@ public interface ResteasyDeployment {
 
     void setSecurityEnabled(boolean securityEnabled);
 
+    // Internal API — called by ConfigurationBootstrap when resteasy.role.based.security=false.
+    // Default no-op preserves backward compatibility for all existing implementors.
+    default void setSecurityExplicitlyDisabled(boolean disabled) {
+        // no-op default
+    }
+
     List<String> getJndiResources();
 
     void setJndiResources(List<String> jndiResources);

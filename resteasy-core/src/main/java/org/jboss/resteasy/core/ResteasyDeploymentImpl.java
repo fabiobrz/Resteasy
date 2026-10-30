@@ -11,6 +11,9 @@ import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Configurable;
@@ -78,6 +81,7 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment {
     // Feature and DynamicFeature instances loaded with the ServiceLoader, keyed by their type
     private final Map<Class<?>, Object> serviceLoadedProviders = new LinkedHashMap<>();
     protected boolean securityEnabled = false;
+    private boolean securityExplicitlyDisabled = false;
     protected List<String> jndiResources;
     protected List<String> resourceClasses;
     protected List<String> unwrappedExceptions;
@@ -153,7 +157,7 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment {
         try {
             initializeObjects();
 
-            if (securityEnabled) {
+            if (!securityExplicitlyDisabled) {
                 providerFactory.register(RoleBasedSecurityFeature.class);
             }
 
@@ -496,6 +500,10 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment {
                     providerFactory.registerProvider(actualProviderClass);
                 }
             }
+        }
+        if (securityExplicitlyDisabled && hasRbacAnnotations()) {
+            LogMessages.LOGGER.rbacAnnotationsIgnoredSecurityDisabled(
+                    ResteasyContextParameters.RESTEASY_ROLE_BASED_SECURITY);
         }
         registerResources(useScanning);
 
@@ -906,6 +914,68 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment {
 
     public void setSecurityEnabled(boolean securityEnabled) {
         this.securityEnabled = securityEnabled;
+    }
+
+    @Override
+    public void setSecurityExplicitlyDisabled(boolean disabled) {
+        this.securityExplicitlyDisabled = disabled;
+    }
+
+    private boolean hasRbacAnnotations() {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (scannedResourceClasses != null) {
+            for (String className : scannedResourceClasses) {
+                try {
+                    Class<?> clazz = tccl.loadClass(className.trim());
+                    if (hasRbacOnClassOrMethods(clazz)) {
+                        return true;
+                    }
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+        }
+        if (resourceClasses != null) {
+            for (String className : resourceClasses) {
+                try {
+                    Class<?> clazz = tccl.loadClass(className.trim());
+                    if (hasRbacOnClassOrMethods(clazz)) {
+                        return true;
+                    }
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+        }
+        if (actualResourceClasses != null) {
+            for (Class<?> clazz : actualResourceClasses) {
+                if (hasRbacOnClassOrMethods(clazz)) {
+                    return true;
+                }
+            }
+        }
+        if (resources != null) {
+            for (Object obj : resources) {
+                if (hasRbacOnClassOrMethods(obj.getClass())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasRbacOnClassOrMethods(Class<?> clazz) {
+        if (clazz.isAnnotationPresent(RolesAllowed.class)
+                || clazz.isAnnotationPresent(DenyAll.class)
+                || clazz.isAnnotationPresent(PermitAll.class)) {
+            return true;
+        }
+        for (java.lang.reflect.Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(RolesAllowed.class)
+                    || method.isAnnotationPresent(DenyAll.class)
+                    || method.isAnnotationPresent(PermitAll.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<String> getJndiResources() {
